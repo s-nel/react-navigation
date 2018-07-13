@@ -1,5 +1,6 @@
 import getNavigationActionCreators from './routers/getNavigationActionCreators';
 import getChildNavigation from './getChildNavigation';
+import invariant from './utils/invariant';
 
 export default function getNavigation(
   router,
@@ -7,7 +8,8 @@ export default function getNavigation(
   dispatch,
   actionSubscribers,
   getScreenProps,
-  getCurrentNavigation
+  getCurrentNavigation,
+  handleUrlNavigation
 ) {
   const actions = router.getActionCreators(state, null);
 
@@ -38,6 +40,10 @@ export default function getNavigation(
       };
     },
     dangerouslyGetParent: () => null,
+    navigateToURL: url => {
+      invariant(typeof url === 'string', 'Url must be a string');
+      handleUrlNavigation(url);
+    },
   };
 
   const actionCreators = {

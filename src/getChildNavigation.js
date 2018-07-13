@@ -106,6 +106,7 @@ function getChildNavigation(navigation, childKey, getCurrentParentNavigation) {
     getScreenProps: navigation.getScreenProps,
     dangerouslyGetParent: getCurrentParentNavigation,
     addListener: childSubscriber.addListener,
+    navigateToURL: navigation.navigateToURL,
   };
   return children[childKey];
 }

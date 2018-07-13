@@ -16,7 +16,8 @@ test('getNavigation provides default action helpers', () => {
     dispatch,
     new Set(),
     () => ({}),
-    () => topNav
+    () => topNav,
+    () => {}
   );
 
   topNav.navigate('GreatRoute');
@@ -44,7 +45,8 @@ test('getNavigation provides router action helpers', () => {
     dispatch,
     new Set(),
     () => ({}),
-    () => topNav
+    () => topNav,
+    () => {}
   );
 
   topNav.foo('Great');
@@ -93,10 +95,67 @@ test('getNavigation get child navigation with router', () => {
     () => {},
     actionSubscribers,
     () => ({}),
-    () => navigation
+    () => navigation,
+    () => {}
   );
 
   const childNavA = topNav.getChildNavigation('a');
 
   expect(childNavA.router).toBe(routerA);
+});
+
+test('getNavigation navigateToUrl non-string', () => {
+  const router = {
+    getActionCreators: () => ({}),
+    getStateForAction(action, lastState = {}) {
+      return lastState;
+    },
+  };
+
+  const handleOpenUrl = jest.fn();
+
+  const topNav = getNavigation(
+    router,
+    {},
+    () => {},
+    new Set(),
+    () => ({}),
+    () => topNav,
+    handleOpenUrl
+  );
+
+  try {
+    topNav.navigateToURL(1);
+    fail('Expected an invariant violation to be thrown');
+  } catch (e) {}
+
+  expect(handleOpenUrl.mock.calls.length).toBe(0);
+});
+
+test('getNavigation navigateToUrl calls dependency', () => {
+  const router = {
+    getActionCreators: () => ({}),
+    getStateForAction(action, lastState = {}) {
+      return lastState;
+    },
+  };
+
+  const handleOpenUrl = jest.fn();
+
+  const topNav = getNavigation(
+    router,
+    {},
+    () => {},
+    new Set(),
+    () => ({}),
+    () => topNav,
+    handleOpenUrl
+  );
+
+  const url = 'foo';
+
+  topNav.navigateToURL(url);
+
+  expect(handleOpenUrl.mock.calls.length).toBe(1);
+  expect(handleOpenUrl.mock.calls[0][0]).toBe(url);
 });

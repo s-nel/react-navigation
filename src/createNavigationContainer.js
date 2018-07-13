@@ -367,7 +367,8 @@ export default function createNavigationContainer(Component) {
             this.dispatch,
             this._actionEventSubscribers,
             this._getScreenProps,
-            () => this._navigation
+            () => this._navigation,
+            url => this._handleOpenURL({ url })
           );
         }
         navigation = this._navigation;
